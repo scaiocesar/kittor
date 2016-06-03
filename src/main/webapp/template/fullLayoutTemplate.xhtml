@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:u="http://java.sun.com/jsf/composite/utils"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+<h:head>
+	<h:outputScript name="jquery/jquery.js" library="primefaces" />
+	<h:outputScript name="jquery/jquery-plugins.js" library="primefaces" />
+</h:head>
+
+<h:body>
+
+	<p:ajaxStatus onstart="PF('statusDialog').show();" onsuccess="PF('statusDialog').hide();"/>  
+              
+		<p:dialog modal="true" widgetVar="statusDialog" draggable="false" closable="false" resizable="false" closeOnEscape="false" width="190" height="70">
+			<h:panelGrid columns="2" columnClasses="vertival-align-middle, vertival-align-middle" style="width:100%">
+			    <p:outputLabel value="AGUARDE..." style="font-size:18px !important;"/> 
+			</h:panelGrid>  
+		</p:dialog>
+
+	<div style="margin-top: 1px; width: 100%;">
+		<ui:insert
+			name="menu">
+			<ui:include src="menu.xhtml"></ui:include>
+		</ui:insert>
+	</div>
+	
+	<div style="float: left; margin-left: 0px; margin-top:10px; width: 100%;">
+		<ui:insert name="body"></ui:insert>
+	</div>
+	
+</h:body>
+</html>

@@ -1,0 +1,152 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+	<!-- ABA CADASTRO -->
+	<ui:define name="content">
+	
+	
+	
+	
+		<p:panel header="Fila de novos pedidos">
+			<p:fieldset id="detailOrderFildSet" collapsed="#{! approveOrderQueueMB.openPanel}" legend="Detalhe do Pedido" toggleable="true"  >
+			<p:messages />
+				<h:form id="formGrid">
+					
+					<p:messages id="msgs"/>
+					<h:panelGrid columns="2">
+						<p:outputLabel style="font-weight: bold;">Cliente: </p:outputLabel>
+						<p:outputLabel	value="#{approveOrderQueueMB.order.customer}" />
+					</h:panelGrid>
+					
+					<h:panelGrid columns="1" >
+						<p:dataTable 
+							value="#{approveOrderQueueMB.order.productOrderSet}" 
+							var="obj"  id="dataTablePO" >
+		
+	   		                <p:column>
+								<f:facet name="header">
+									<h:outputText style="font-weight: bold;" value="Produto" />
+								</f:facet>
+			               		<h:outputText value="#{obj.product.nomeProduto}" />
+							</p:column>
+							
+							 <p:column>
+								<f:facet name="header">
+									<h:outputText style="font-weight: bold;" value="Codigo" />
+								</f:facet>
+					               		<h:outputText value="#{obj.product.codigoInterno}" />
+							</p:column>
+							
+							 <p:column>
+								<f:facet name="header">
+									<h:outputText style="font-weight: bold;" value="Vl Unit" />
+								</f:facet>
+			               		<h:outputText value="#{obj.precoUnitario}" >
+			               			<f:convertNumber pattern="#,##0.00" />
+			               		</h:outputText>
+							</p:column>
+	
+							 <p:column>
+								<f:facet name="header">
+									<h:outputText style="font-weight: bold;" value="Qtd" />
+								</f:facet>
+					               		<h:outputText value="#{obj.amount}" />
+							</p:column>
+							
+							 <p:column>
+								<f:facet name="header">
+									<h:outputText style="font-weight: bold;" value="Obs" />
+								</f:facet>
+				               		<h:outputText value="#{obj.obs}" />
+							</p:column>
+							
+							 <p:column>
+								<f:facet name="header">
+									<h:outputText style="font-weight: bold;" value="Total" />
+								</f:facet>
+			               		<h:outputText value="#{obj.precoTotal}" >
+			               			<f:convertNumber pattern="#,##0.00" />
+			               		</h:outputText>
+							</p:column>
+							
+						</p:dataTable>
+					</h:panelGrid>
+					
+					<h:panelGrid columns="2">
+						<p:outputLabel style="font-size:20px !important;font-weight: bold;"  >Total do Pedido: </p:outputLabel>
+						<h:outputText style="font-size:20px !important;" id="totalValue" value="#{approveOrderQueueMB.order.totalValue}" >
+	               			<f:convertNumber pattern="#,##0.00" />
+	               		</h:outputText>
+
+						<p:outputLabel style="font-size:20px !important;font-weight: bold;"  >Observação: </p:outputLabel>
+						<h:inputTextarea value="#{approveOrderQueueMB.obs}" required="true" requiredMessage="Preencha uma Observação" />
+	               			
+	               		
+					</h:panelGrid>
+					
+					<p:confirmDialog global="true" >
+				        <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				    </p:confirmDialog>
+
+
+					<p:commandButton value="Aprovar"	actionListener="#{approveOrderQueueMB.doOnGoing}" update=":formGrid,:formList">
+						<p:confirm header="Confirmação" 	message="Deseja aprovar este pedido?" icon="ui-icon-alert" />
+					</p:commandButton>
+					<p:commandButton value="Reprovar"	actionListener="#{approveOrderQueueMB.doReject}" update=":formGrid,:formList" styleClass="RedButton">
+						<p:confirm header="Confirmação" message="Deseja REPROVAR este pedido?" icon="ui-icon-alert" />
+					</p:commandButton>
+				</h:form>
+			</p:fieldset>
+			<br/>
+			<p:separator></p:separator>
+			
+			<p:commandButton actionListener="#{approveOrderQueueMB.doListNewOrder}" update=":formList:table" value="Atualizar Pedidos"/>
+			<h:form id="formList">
+				<p:dataTable id="table" value="#{approveOrderQueueMB.listOrders}" var="order" rowKey="#{order.idOrder}"	selection="#{approveOrderQueueMB.order}"  >
+					<p:column selectionMode="single" style="width:20px;text-align:center"/>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Numero" />
+						</f:facet>
+		          		<h:outputText value="#{order.idOrder}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Data Abertura" />
+						</f:facet>
+		          		<h:outputText value="#{order.dataAbertura}" >
+		          			<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+		          		</h:outputText>
+		          		
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Cliente" />
+						</f:facet>
+		          		<h:outputText value="#{order.customer.razaoSocial}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Total" />
+						</f:facet>
+		          		<h:outputText  value="#{order.totalValue}" >
+	               			<f:convertNumber pattern="R$ #,##0.00" />
+	               		</h:outputText>
+					</p:column>
+					 <f:facet name="footer">
+			            <p:commandButton value="Visualizar" action="#{approveOrderQueueMB.doPreview}"  update=":detailOrderFildSet"/>
+			        </f:facet>
+				</p:dataTable>
+			</h:form>
+			
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+

@@ -1,0 +1,34 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+	<!-- ABA CADASTRO -->
+	<ui:define name="content">
+	<p:panel header="Alterar senha">
+		<h:form id="formGrid">
+			<p:messages escape="false" />
+			<h:panelGrid columns="2">
+				<p:outputLabel>Senha Atual:</p:outputLabel>
+				<p:column>
+					<p:password required="true" requiredMessage="O Senha Atual esta vazio"  value="#{changePwdMB.oldPwd}" /> 
+				</p:column>
+				<p:outputLabel>Senha Nova:</p:outputLabel>
+				<p:column>
+					<p:password required="true" requiredMessage="O Senha Nova esta vazio"  value="#{changePwdMB.newPwd}" /> 
+				</p:column>
+				<p:outputLabel>Confirmar Senha Nova:</p:outputLabel>
+				<p:column>
+					<p:password required="true" requiredMessage="O Confirmar Senha Nova esta vazio"  value="#{changePwdMB.newPwd2}" /> 
+				</p:column>
+
+				<p:commandButton value="Salvar" action="#{changePwdMB.changePwd}" update="formGrid" />
+			</h:panelGrid>
+		</h:form>
+	</p:panel>
+	</ui:define>
+
+</ui:composition>
+

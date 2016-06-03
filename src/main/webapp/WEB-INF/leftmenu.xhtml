@@ -1,0 +1,59 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ps="http://primefaces.org/sentinel"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
+    
+    <div id="layout-menubar" class="Unselectable fontRegular">
+        <div class="layout-menubarinner-box" id="buttonArea">
+            <a href="#" id="layout-menubar-resize" class="BordRad3" title="Menu Resize"><i class="icon-th-list-2"></i></a>
+            <a href="#" id="layout-menubar-resize2" class="BordRad3" title="Open Menu"><i class="icon-menu"></i></a>
+        </div>
+
+
+        <ps:menu id="sm_leftmenu">
+            <p:menuitem id="sm_dashboard" value="Home" icon="icon-home-outline" outcome="index" containerStyleClass="layout-menubar-active"/>
+            <p:submenu label="Cadastros" icon="icon-gauge"  >
+                <p:menuitem value="Categoria" icon="icon-music" outcome="productCategory" rendered="#{request.isUserInRole('ROLE_ADMIN')}"/>
+                <p:menuitem value="Produtos" icon="icon-music" outcome="product" rendered="#{request.isUserInRole('ROLE_ADMIN')}"/>
+                <p:menuitem value="Cliente" icon="icon-music" outcome="customer" rendered="#{request.isUserInRole('ROLE_ADMIN') || request.isUserInRole('ROLE_SELLER')}"/>
+                <p:menuitem value="Usuarios" icon="icon-music" outcome="user" rendered="#{request.isUserInRole('ROLE_ADMIN')}"/>
+            </p:submenu>
+             <p:submenu label="Pedidos" icon="icon-gauge" >
+                <p:menuitem value="Novo Pedido" icon="icon-music" outcome="newOrder" rendered="#{request.isUserInRole('ROLE_ADMIN')  || request.isUserInRole('ROLE_SELLER') }"/>
+                <p:menuitem value="Aprovação" icon="icon-music" outcome="listNewOrder" rendered="#{request.isUserInRole('ROLE_ADMIN')}"/>
+                <p:menuitem value="Finalização" icon="icon-music" outcome="listNewOrder" rendered="#{request.isUserInRole('ROLE_ADMIN')}"/>
+             </p:submenu>
+            <p:menuitem value="Configurações" icon="icon-wrench-1" outcome="systemConfig" containerStyleClass="layout-menubar-active"/>
+          <!-- 
+            <p:submenu id="sm_dp" label="Default Pages" icon="icon-pin-outline">
+                <p:menuitem id="sm_empty" value="Empty Page" icon="icon-plus-squared-alt" outcome="empty-page"/>
+                <p:menuitem id="sm_login" value="Login Page" icon="icon-login" outcome="login"/>
+                <p:menuitem id="sm_error" value="Error Page" icon="icon-warning-empty" outcome="error" />
+                <p:menuitem id="sm_404" value="404 Page" icon="icon-warning-empty" outcome="404"/>
+                <p:menuitem id="sm_access" value="Access Denied Page" icon="icon-warning-empty" outcome="access-denied"/>
+            </p:submenu>
+            <p:submenu id="sm_menu" label="Menu Hierarchy" icon="icon-sitemap">
+                <p:submenu id="sm_sub1" label="Submenu 1" icon="icon-folder-empty">
+                    <p:submenu id="sm_sub2" label="Submenu 2" icon="icon-folder-empty">
+                        <p:submenu id="sm_sub3" label="Submenu 3" icon="icon-folder-empty">
+                            <p:menuitem id="sm_lnk1" value="Link 1" icon="icon-link" outcome="empty-page.xhtml"/>
+                            <p:menuitem id="sm_lnk2" value="Link 2" icon="icon-link" outcome="empty-page.xhtml" />
+                            <p:menuitem id="sm_lnk3" value="Link 3" icon="icon-link" outcome="empty-page.xhtml" />
+                        </p:submenu>
+                    </p:submenu>
+                </p:submenu>
+            </p:submenu>
+            <p:menuitem id="sm_fonts" value="Font Icons" icon="icon-book" outcome="font-icons.xhtml" />
+            <p:menuitem id="sm_user" value="User Profile" icon="icon-vcard" outcome="empty-page" />
+            <p:menuitem id="sm_tasks" value="Tasks" icon="icon-tasks" outcome="empty-page" />
+            <p:menuitem id="sm_contact" value="Contact" icon="icon-phone" outcome="empty-page" />
+            <p:menuitem id="sm_doc" value="Documentation" icon="icon-graduation-cap" outcome="documentation" />
+           -->
+        </ps:menu>
+        
+    </div>
+
+</ui:composition>

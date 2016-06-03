@@ -1,0 +1,234 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+	<!-- ABA CADASTRO -->
+	<ui:define name="content">
+	
+	 <script type="text/javascript" >
+    
+    function limpa_formulário_cep() {
+            //Limpa valores do formulário de cep.
+            document.getElementById('formCad:rua').value=("");
+            document.getElementById('formCad:bairro').value=("");
+            document.getElementById('formCad:cidade').value=("");
+            document.getElementById('formCad:uf').value=("");
+    }
+
+    function meu_callback(conteudo) {
+        if (!("erro" in conteudo)) {
+            //Atualiza os campos com os valores.
+            document.getElementById('formCad:rua').value=(conteudo.logradouro);
+            document.getElementById('formCad:bairro').value=(conteudo.bairro);
+            document.getElementById('formCad:cidade').value=(conteudo.localidade);
+            document.getElementById('formCad:uf').value=(conteudo.uf);
+        } //end if.
+        else {
+            //CEP não Encontrado.
+            limpa_formulário_cep();
+            alert("CEP não encontrado.");
+        }
+    }
+        
+    function pesquisacep(cep) {
+
+        //Verifica se campo cep possui valor informado.
+        if (cep != "") {
+
+            //Expressão regular para validar o CEP.
+            var validacep = /^[0-9]{5}-?[0-9]{3}$/;
+
+            //Valida o formato do CEP.
+            if(validacep.test(cep)) {
+
+                //Preenche os campos com "..." enquanto consulta webservice.
+                document.getElementById('formCad:rua').value="...";
+                document.getElementById('formCad:bairro').value="...";
+                document.getElementById('formCad:cidade').value="...";
+                document.getElementById('formCad:uf').value="...";
+
+                //Cria um elemento javascript.
+                var script = document.createElement('script');
+
+                //Sincroniza com o callback.
+                script.src = '//viacep.com.br/ws/'+ cep + '/json/?callback=meu_callback';
+
+                //Insere script no documento e carrega o conteúdo.
+                document.body.appendChild(script);
+
+            } //end if.
+            else {
+                //cep é inválido.
+                limpa_formulário_cep();
+                alert("Formato de CEP inválido.");
+            }
+        } //end if.
+        else {
+            //cep sem valor, limpa formulário.
+            limpa_formulário_cep();
+        }
+    };
+
+    </script>
+	
+	<p:panel header="Clientes">
+			<h:form id="formCad">
+				<p:fieldset collapsed="#{! customerMB.openPanel}" legend="Novo" toggleable="true"  >
+				<p:messages id="msgsCad"/>
+				<h:panelGrid columns="2">
+					<p:outputLabel>Tipo Cliente</p:outputLabel>
+					<p:column>
+						<h:selectOneRadio value="#{customerMB.obj.isCpf}"   >
+							 <f:selectItem  itemLabel="CPF" itemValue="true"  />
+							 <f:selectItem  itemLabel="CNPJ" itemValue="false" />
+							 <p:ajax event="change" update=":formCad" immediate="true" listener="#{customerMB.changeCPF}" />
+						</h:selectOneRadio>
+					</p:column>
+					
+					<p:outputLabel rendered="#{!customerMB.obj.isCpf}" >Razão Social</p:outputLabel>
+					<p:outputLabel rendered="#{customerMB.obj.isCpf}" >Nome</p:outputLabel>
+					<p:column>
+						<h:inputHidden value="#{customerMB.obj.idCustomer}" />
+						<p:inputText value="#{customerMB.obj.razaoSocial}" size="50"  required="true" requiredMessage="Razão Social é obrigatório"/>
+					</p:column	>
+					<p:outputLabel rendered="#{!customerMB.obj.isCpf}" >Nome Fantasia</p:outputLabel>
+					<p:column rendered="#{!customerMB.obj.isCpf}" >
+						<p:inputText value="#{customerMB.obj.nomeFantasia}" size="50" />
+					</p:column>
+					
+					<p:outputLabel rendered="#{customerMB.obj.isCpf}" >CPF</p:outputLabel>
+					<p:column rendered="#{customerMB.obj.isCpf}" >
+					<p:inputMask mask="999.999.999-99" id="cpf"
+						requiredMessage="CPF é obrigatorio"
+						value="#{customerMB.obj.cpfCnpj}"
+						required="true" />
+					</p:column>
+
+					<p:outputLabel rendered="#{!customerMB.obj.isCpf}" >CNPJ</p:outputLabel>
+					<p:column rendered="#{!customerMB.obj.isCpf}">
+					<p:inputMask mask="99.999.999/9999-99"	id="cnpj"
+						requiredMessage="CPNJ é obrigatorio"
+						value="#{customerMB.obj.cpfCnpj}"
+						required="true" />
+					</p:column>
+					
+					<p:outputLabel >Email</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{customerMB.obj.email}" size="50"   />
+					</p:column	>
+					
+					<p:outputLabel>Telefone1</p:outputLabel>
+					<p:column>
+						<p:inputMask mask="(99) 9999-9999?9" size="15"
+								value="#{customerMB.obj.telefone1}"	 />
+					</p:column>
+					<p:outputLabel>Telefone2</p:outputLabel>
+					<p:column>
+						<p:inputMask mask="(99) 9999-9999?9" size="15"
+								value="#{customerMB.obj.telefone2}"	 />
+					</p:column>
+
+					<p:outputLabel>CEP</p:outputLabel>
+					<p:column>
+						<p:inputMask mask="99999-999" id="cep" size="11" requiredMessage="CEP é obrigatorio" onblur="pesquisacep(this.value);"
+						value="#{customerMB.obj.cep}"	required="true" />
+					</p:column>
+					
+					<h:outputText value="Rua" />
+					<p:inputText size="50" id="rua" requiredMessage="Rua é obrigatorio" 
+							value="#{customerMB.obj.logradouro}"
+							required="true" />
+		
+					<h:outputText value="Bairro" />
+					<p:inputText size="50" id="bairro" requiredMessage="Bairro é obrigatorio" 
+							value="#{customerMB.obj.bairro}"
+							required="true" />
+		
+					<h:outputText value="UF" />
+					<p:inputText size="2" id="uf" requiredMessage="UF é obrigatorio" 
+							value="#{customerMB.obj.uf}"
+							required="true" />
+							
+					<h:outputText value="Cidade" />
+					<p:inputText size="50" id="cidade" requiredMessage="Cidade é obrigatorio" 
+							value="#{customerMB.obj.cidade}"
+							required="true" />
+
+					<h:outputText value="Complemento" />
+					<p:inputText size="50"   
+							value="#{customerMB.obj.complemento}"
+							 />
+
+					<p:outputLabel>Limite de compra</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{customerMB.obj.limiteCompra}" size="10" required="true"/>
+					</p:column>
+					
+					<p:outputLabel>Cliente Ativo</p:outputLabel>
+					<p:column>
+						<p:selectBooleanCheckbox value="#{customerMB.obj.ativo}" />
+					</p:column>
+	
+					<p:commandButton value="Salvar" action="#{customerMB.doSave}" update=":formCad,:formGrid" />
+					<p:commandButton value="Cancelar" update=":formCad" process="@this" styleClass="RedButton" >
+		                <p:resetInput target=":formCad" />
+		            </p:commandButton>
+				</h:panelGrid>
+			
+				</p:fieldset>
+			</h:form>
+	
+		<h:form id="formGrid">
+			<p:messages id="msgs"/>
+			<h:panelGrid columns="2">
+				<p:dataTable value="#{customerMB.list}" var="obj" rowKey="#{obj.idCustomer}"	selection="#{customerMB.selectedRows}"  >
+			         <f:facet name="header">       </f:facet>
+			        <p:column selectionMode="multiple" style="width:20px;text-align:center"/>
+					
+					<p:column filterBy="#{obj.razaoSocial}"   filterMatchMode="contains">
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Nome" />
+						</f:facet>
+			               <h:outputText value="#{obj.razaoSocial}" />
+					</p:column>
+					
+					<p:column filterBy="#{obj.cpfCnpj}"  filterMatchMode="contains">
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Cpf/Cnpj" />
+						</f:facet>
+			               <h:outputText value="#{obj.cpfCnpj}" />
+					</p:column>
+					
+					<p:column>
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Telefone" />
+						</f:facet>
+						  <h:outputText value="#{obj.telefone1}" />
+					</p:column>
+					
+					<f:facet name="footer">
+			            <p:commandButton value="Alterar" actionListener="#{customerMB.doUpdate}" update=":formCad" >
+					    </p:commandButton>
+			            <p:commandButton value="Excluir" actionListener="#{customerMB.doDelete}" update=":formGrid" rendered="#{request.isUserInRole('ROLE_ADMIN')}">
+					        <p:confirm header="Confirmação" message="Deseja realmente excluir?" icon="ui-icon-alert" />
+					    </p:commandButton>
+			        </f:facet>
+			        
+				</p:dataTable>
+			</h:panelGrid>
+			
+			 <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+		        <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		    </p:confirmDialog>
+			
+		</h:form>
+	</p:panel>
+		
+	</ui:define>
+
+</ui:composition>
+

@@ -1,0 +1,149 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+	<!-- ABA CADASTRO -->
+	<ui:define name="content">
+	<p:panel header="Usuarios do sistema">
+		<p:fieldset collapsed="true" legend="Novo" toggleable="true" >
+			<h:form id="formCad">
+				<p:messages id="msgsCad"/>
+				<h:panelGrid columns="2">
+					<p:outputLabel>Nome</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{userMB.user.name}" size="10" maxlength="10" required="true" requiredMessage="Nome é obrigatório"/>
+					</p:column>
+					<p:outputLabel>Email:</p:outputLabel>
+					<p:column>
+						<p:inputText size="50" requiredMessage="Email é obrigatorio" 
+								value="#{userMB.user.email}"
+								required="true" />
+					</p:column>
+					<p:outputLabel>Senha</p:outputLabel>
+					<p:column>
+						<p:password value="#{userMB.user.password}" size="10" maxlength="10" required="true" requiredMessage="Senha é obrigatório"/>
+					</p:column>
+					
+					<p:outputLabel>Regra:</p:outputLabel>
+					<p:column>
+						<p:selectOneMenu value="#{userMB.user.role}" style="width:100%" converter="entityConverter" filter="true" filterMatchMode="contains" effect="fade">
+	                       <f:selectItems value="#{userMB.roleList}" var="bnk"/>
+	                    </p:selectOneMenu>
+					</p:column>
+	
+					<p:outputLabel>Usuario Ativo:</p:outputLabel>
+					<p:column>
+						<p:selectBooleanCheckbox value="#{userMB.user.isActive}" />
+					</p:column>
+
+	
+					<p:commandButton value="Salvar" action="#{userMB.doSave}" update=":formCad,:formGrid" />
+				</h:panelGrid>
+			</h:form>
+			
+		</p:fieldset>
+	
+		<h:form id="formGrid">
+			<p:messages id="msgs"/>
+			<h:panelGrid columns="2">
+				<p:dataTable value="#{userMB.userList}" var="obj" 
+				rowKey="#{obj.idUser}"
+				selection="#{userMB.selectedRows}" editable="true" >
+					<p:ajax event="rowEdit" listener="#{userMB.onRowEdit}" update=":formGrid:msgs" />
+			       	<p:ajax event="rowEditCancel" listener="#{userMB.onRowCancel}" update=":formGrid:msgs" />
+			         <f:facet name="header">
+			            
+			        </f:facet>
+			        <p:column selectionMode="multiple" style="width:20px;text-align:center"/>
+					
+					<p:column>
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Email" />
+						</f:facet>
+						<p:cellEditor>	
+			               <f:facet name="output"><h:outputText value="#{obj.email}" /></f:facet>
+			               <f:facet name="input">
+			               		<p:inputText size="50" requiredMessage="Email é obrigatorio" 
+								value="#{obj.email}"
+								required="true" />
+			               </f:facet>
+			           </p:cellEditor>
+						
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Nome" />
+						</f:facet>
+						<p:cellEditor>	
+			               <f:facet name="output"><h:outputText value="#{obj.name}" /></f:facet>
+			               <f:facet name="input"><p:inputText value="#{obj.name}" size="50" maxlength="50" /></f:facet>
+			           </p:cellEditor>
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Role" />
+						</f:facet>
+						<p:cellEditor>	
+			               <f:facet name="output"><h:outputText value="#{obj.role}" /></f:facet>
+			               	<f:facet name="input">
+								<p:selectOneMenu value="#{obj.role}" style="width:100%" converter="entityConverter" filter="true" filterMatchMode="contains" effect="fade">
+			                       <f:selectItems value="#{userMB.roleList}" var="bnk"/>
+			                    </p:selectOneMenu>
+							</f:facet>
+			           </p:cellEditor>
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Ultimo Login" />
+						</f:facet>
+						<p:cellEditor>	
+			               <f:facet name="output">
+			               		<h:outputText value="#{obj.lastLogin}" >
+			               			<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+			               		</h:outputText>
+			               </f:facet>
+			               <f:facet name="input">
+								<h:outputText value="#{obj.lastLogin}" >
+			               			<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+			               		</h:outputText>
+			               	</f:facet>
+			           </p:cellEditor>
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Ativo" />
+						</f:facet>
+						<p:cellEditor>	
+			               <f:facet name="output"><p:selectBooleanCheckbox value="#{obj.isActive}" disabled="true" /></f:facet>
+			               <f:facet name="input"><p:selectBooleanCheckbox value="#{obj.isActive}"  /></f:facet>
+			           </p:cellEditor>
+					</p:column>
+			       	
+					
+					<p:column style="width:32px">
+			           <p:rowEditor />
+			       	</p:column>
+
+			       	<f:facet name="footer">
+			            <p:commandButton value="Excluir" actionListener="#{userMB.doDelete}" update=":formGrid">
+					        <p:confirm header="Confirmação" message="Deseja realmente excluir?" icon="ui-icon-alert" />
+					    </p:commandButton>
+			        </f:facet>
+				</p:dataTable>
+			</h:panelGrid>
+			
+			 <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+		        <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		    </p:confirmDialog>
+			
+		</h:form>
+	</p:panel>
+		
+	</ui:define>
+
+</ui:composition>
+

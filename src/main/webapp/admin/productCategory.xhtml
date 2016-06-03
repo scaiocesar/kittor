@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+	<!-- ABA CADASTRO -->
+	<ui:define name="content">
+	<p:panel header="Categoria de produtors">
+		<p:fieldset collapsed="true" legend="Novo" toggleable="true" >
+			<h:form id="formCad">
+				<p:messages id="msgsCad"/>
+				<h:panelGrid columns="2">
+					<p:outputLabel>Categoria:</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{productCategoryMB.obj.categoria}" size="30" required="true" requiredMessage="Categoria é obrigatório"/>
+					</p:column>
+					<p:commandButton value="Salvar" action="#{productCategoryMB.doSave}" update=":formCad,:formGrid" />
+				</h:panelGrid>
+			</h:form>
+			
+		</p:fieldset>
+	
+		<h:form id="formGrid">
+			<p:messages id="msgs"/>
+			<h:panelGrid columns="2">
+				<p:dataTable value="#{productCategoryMB.list}" var="obj" 
+				rowKey="#{obj.idProductsCategory}"
+				selection="#{productCategoryMB.selectedRows}" editable="true" >
+					<p:ajax event="rowEdit" listener="#{productCategoryMB.onRowEdit}" update=":formGrid:msgs" />
+			       	<p:ajax event="rowEditCancel" listener="#{productCategoryMB.onRowCancel}" update=":formGrid:msgs" />
+			         <f:facet name="header">
+			            
+			        </f:facet>
+			        <p:column selectionMode="multiple" style="width:20px;text-align:left"/>
+					
+					<p:column>
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Categoria" />
+						</f:facet>
+						<p:cellEditor>	
+			               <f:facet name="output"><h:outputText value="#{obj.categoria}" /></f:facet>
+			               <f:facet name="input">
+			               		<p:inputText size="40" requiredMessage="Categoria é obrigatorio" value="#{obj.categoria}"	required="true" />
+			               </f:facet>
+			           </p:cellEditor>
+					</p:column>
+					
+					<p:column style="width:32px">
+			           <p:rowEditor />
+			       	</p:column>
+
+			       	<f:facet name="footer">
+			            <p:commandButton value="Excluir" actionListener="#{productCategoryMB.doDelete}" update=":formGrid">
+					        <p:confirm header="Confirmação" message="Deseja realmente excluir?" icon="ui-icon-alert" />
+					    </p:commandButton>
+			        </f:facet>
+				</p:dataTable>
+			</h:panelGrid>
+			
+			 <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+		        <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		    </p:confirmDialog>
+			
+		</h:form>
+	</p:panel>
+		
+	</ui:define>
+
+</ui:composition>
+

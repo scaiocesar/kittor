@@ -1,0 +1,61 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+	<!-- ABA CADASTRO -->
+	<ui:define name="content">
+	<p:panel header="Configuração do Sistema">
+		<p:fieldset collapsed="false" legend="Novo" >
+			<h:form id="formCad">
+				<p:messages id="msgsCad"/>
+				<h:panelGrid columns="2">
+					<p:outputLabel>Servidor SMTP</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{systemConfigMB.systemConfig.hostname}" size="50"  required="true" requiredMessage="Host é obrigatório"/>
+					</p:column>
+					<p:outputLabel>Login SMTP</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{systemConfigMB.systemConfig.emailLogin}" size="50"  required="true" requiredMessage="Login é obrigatório"/>
+					</p:column>
+					<p:outputLabel>Remetente</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{systemConfigMB.systemConfig.emailFrom}" size="50"  required="true" requiredMessage="Remetente é obrigatório"/>
+					</p:column>
+					<p:outputLabel>Password SMTP</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{systemConfigMB.systemConfig.emailPassword}" size="50"  required="true" requiredMessage="Senha é obrigatório"/>
+					</p:column>
+					<p:outputLabel>Porta SMTP</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{systemConfigMB.systemConfig.port}" size="3"  required="true" requiredMessage="Porta é obrigatório"/>
+					</p:column>
+					
+					<p:outputLabel>Titulo email Confirmação cadastro</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{systemConfigMB.systemConfig.emailConfirmationSubject}" size="50"  required="true" requiredMessage="Titulo é obrigatório"/>
+					</p:column>
+					<p:outputLabel>HTML Email:</p:outputLabel>
+					<p:column>
+						<p:editor  widgetVar="editorWidget" value="#{systemConfigMB.systemConfig.htmlEmailConfirmationLayout}" width="600" />
+					</p:column>
+					
+					<p:commandButton value="Salvar" action="#{systemConfigMB.doSave}" update=":formCad" />
+					<br/><br/>
+					<p:outputLabel>Testar Email</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{systemConfigMB.emailTestTo}" size="50" />
+						<p:commandButton value="Testar Envio de email" action="#{systemConfigMB.testEmail}" update=":formCad" />
+					</p:column>
+					
+				</h:panelGrid>
+			</h:form>
+		</p:fieldset>
+	
+	</p:panel>
+	</ui:define>
+
+</ui:composition>
+

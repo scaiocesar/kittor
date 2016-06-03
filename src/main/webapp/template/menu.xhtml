@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:u="http://java.sun.com/jsf/composite/utils"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:form>
+		<p:menubar autoDisplay="false" >
+			<p:menuitem value="Home" url="/admin/index.xhtml" icon="ui-icon-home" />
+			<p:submenu label="Sistema" icon="ui-icon-wrench" >
+				<p:menuitem value="Usuarios do sistema" url="/admin/admin_access/user/user.xhtml" rendered="#{request.isUserInRole('ROLE_ADMIN')}" />
+				<p:menuitem value="Alterar Senha" url="/admin/user/changepwd.xhtml" icon="ui-icon-key" />
+			</p:submenu>
+			<p:menuitem value="Sair" url="/logout" icon="ui-icon-power" />
+		</p:menubar>
+	</h:form>
+</ui:composition>

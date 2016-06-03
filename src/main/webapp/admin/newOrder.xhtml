@@ -1,0 +1,188 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+	<!-- ABA CADASTRO -->
+	<ui:define name="content">
+		<p:panel header="Realizar Pedido">
+			<h:form id="formGrid">
+				<p:messages id="msgs"/>
+				<h:panelGrid columns="3">
+					<p:outputLabel>Cliente</p:outputLabel>
+					<p:autoComplete 
+						
+						minQueryLength="3"
+						value="#{newOrderMB.order.customer}" 
+						completeMethod="#{newOrderMB.findCustomer}"
+						var="ctm"
+						itemLabel="#{ctm}" itemValue="#{ctm}" 
+						converter="entityConverter">
+							<p:ajax event="itemSelect" listener="#{newOrderMB.selectCustomer}" update=":formGrid" />
+						</p:autoComplete>
+					<p:outputLabel> </p:outputLabel>
+					
+					<p:outputLabel rendered="#{newOrderMB.customer != null}">Produto</p:outputLabel>
+					<p:autoComplete 
+						
+						minQueryLength="2"
+						rendered="#{newOrderMB.customer != null}"
+						value="#{newOrderMB.product}"
+						completeMethod="#{newOrderMB.findProduct}" 
+						var="prd"
+						itemLabel="#{prd.nomeProduto}" itemValue="#{prd}"
+						converter="entityConverter">
+						<p:ajax event="itemSelect" listener="#{newOrderMB.addProductOrder}" update=":formGrid" />
+					</p:autoComplete>
+				</h:panelGrid>
+				
+				<h:panelGrid columns="1" rendered="#{newOrderMB.customer != null}">
+					<p:dataTable 
+						value="#{newOrderMB.listProductOrder}" 
+						var="obj"  id="dataTablePO"
+						editable="true"
+						rowKey="#{obj.product.idProduct}"
+						selection="#{newOrderMB.selectedRows}"	 >
+					
+					<p:ajax event="rowEdit" listener="#{newOrderMB.onRowEdit}" update=":formGrid:totalValue" />
+					 	<p:column selectionMode="multiple" style="width:20px;"/>
+	
+   		                <p:column>
+							<f:facet name="header">
+								<h:outputText style="font-weight: bold;" value="Produto" />
+							</f:facet>
+							<p:cellEditor>	
+				               <f:facet name="output">
+				               		<h:outputText value="#{obj.product.nomeProduto}" >
+				               		</h:outputText>
+				               </f:facet>
+				               <f:facet name="input">
+									<h:outputText value="#{obj.product.nomeProduto}" >
+				               		</h:outputText>
+				               	</f:facet>
+				           </p:cellEditor>
+						</p:column>
+						
+						 <p:column>
+							<f:facet name="header">
+								<h:outputText style="font-weight: bold;" value="Codigo" />
+							</f:facet>
+							<p:cellEditor>	
+				               <f:facet name="output">
+				               		<h:outputText value="#{obj.product.codigoInterno}" >
+				               		</h:outputText>
+				               </f:facet>
+				               <f:facet name="input">
+									<h:outputText value="#{obj.product.codigoInterno}" >
+				               		</h:outputText>
+				               	</f:facet>
+				           </p:cellEditor>
+						</p:column>
+						
+						 <p:column>
+							<f:facet name="header">
+								<h:outputText style="font-weight: bold;" value="Vl Unit" />
+							</f:facet>
+							<p:cellEditor>	
+				               <f:facet name="output">
+				               		<h:outputText value="#{obj.precoUnitario}" >
+				               			<f:convertNumber pattern="#,##0.00" />
+				               		</h:outputText>
+				               </f:facet>
+				               <f:facet name="input">
+									<h:outputText value="#{obj.precoUnitario}" >
+				               			<f:convertNumber pattern="#,##0.00" />
+				               		</h:outputText>
+				               	</f:facet>
+				           </p:cellEditor>
+						</p:column>
+						 <p:column>
+							<f:facet name="header">
+								<h:outputText style="font-weight: bold;" value="Qtd" />
+							</f:facet>
+							<p:cellEditor>	
+				               <f:facet name="output">
+				               		<h:outputText value="#{obj.amount}" >
+				               		</h:outputText>
+				               </f:facet>
+				               <f:facet name="input">
+									<p:inputText size="2" requiredMessage="Quantidade é obrigatorio" 
+									value="#{obj.amount}"
+									required="true" />
+				               	</f:facet>
+				           </p:cellEditor>
+						</p:column>
+	
+						 <p:column>
+							<f:facet name="header">
+								<h:outputText style="font-weight: bold;" value="Obs" />
+							</f:facet>
+							<p:cellEditor>	
+				               <f:facet name="output">
+				               		<h:outputText value="#{obj.obs}" >
+				               		</h:outputText>
+				               </f:facet>
+				               <f:facet name="input">
+									<p:inputText size="40" 	value="#{obj.obs}" />
+				               	</f:facet>
+				           </p:cellEditor>
+						</p:column>
+						
+						 <p:column>
+							<f:facet name="header">
+								<h:outputText style="font-weight: bold;" value="Total" />
+							</f:facet>
+							<p:cellEditor>	
+				               <f:facet name="output">
+				               		<h:outputText value="#{obj.precoTotal}" >
+				               			<f:convertNumber pattern="#,##0.00" />
+				               		</h:outputText>
+				               </f:facet>
+				               <f:facet name="input">
+									<h:outputText value="#{obj.precoTotal}" >
+				               			<f:convertNumber pattern="#,##0.00" />
+				               		</h:outputText>
+				               	</f:facet>
+				           </p:cellEditor>
+						</p:column>
+						
+						<p:column style="width:32px">
+				           <p:rowEditor />
+				       	</p:column>
+						
+						<f:facet name="footer">
+				            <p:commandButton value="Excluir" actionListener="#{newOrderMB.removeProductOrder}" update=":formGrid" styleClass="RedButton">
+						        <p:confirm header="Confirmação" message="Deseja realmente excluir?" icon="ui-icon-alert" />
+						    </p:commandButton>
+				        </f:facet>
+						
+					</p:dataTable>
+				</h:panelGrid>
+				
+				
+				
+				<h:panelGrid columns="2">
+					<p:outputLabel style="font-size:20px !important;"  >Total do Pedido</p:outputLabel>
+					<h:outputText style="font-size:20px !important;" id="totalValue" value="#{newOrderMB.order.totalValue}" >
+               			<f:convertNumber pattern="#,##0.00" />
+               		</h:outputText>
+               		 
+               		 <p:commandButton rendered="#{not empty newOrderMB.listProductOrder }" value="Salvar Pedido" actionListener="#{newOrderMB.doSave}" update=":formGrid" >
+					        <p:confirm header="Confirmação" message="Enviar o pedido?" icon="ui-icon-alert" />
+					    </p:commandButton>
+				</h:panelGrid>
+				
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+			        <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			    </p:confirmDialog>
+				
+			</h:form>
+		</p:panel>
+
+	</ui:define>
+
+</ui:composition>
+

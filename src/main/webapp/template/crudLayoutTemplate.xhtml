@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:u="http://java.sun.com/jsf/composite/utils"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/template/fullLayoutTemplate.xhtml">
+	
+	<ui:define name="body">
+		<p:tabView id="tab" cache="false" widgetVar="tabVar" >
+			
+			<p:tab title="#{titleFirstTab}" id="firstTab" >
+				<ui:insert name="details"/>
+			</p:tab>
+
+			<p:tab title="#{titleSecondTab}" id="secondTab" rendered="#{not empty titleSecondTab}">
+				<ui:insert name="inquiry"/>
+			</p:tab>
+			
+			<p:tab title="#{titleThirdTab}" id="thirdTab" rendered="#{not empty titleThirdTab}">
+				<ui:insert name="third"/>
+			</p:tab>
+			
+			<p:tab title="#{titleFourthTab}" id="fourthTab" rendered="#{not empty titleFourthTab}">
+				<ui:insert name="fourth"/>
+			</p:tab>
+		</p:tabView>
+	</ui:define>
+</ui:composition>

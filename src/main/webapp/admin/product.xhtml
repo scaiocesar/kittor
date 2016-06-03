@@ -1,0 +1,176 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+	<!-- ABA CADASTRO -->
+	<ui:define name="content">
+	<p:panel header="Produtos">
+			<h:form id="formCad">
+				<p:fieldset collapsed="#{! productMB.openPanel}" legend="Novo" toggleable="true"  >
+				<p:messages id="msgsCad"/>
+				<h:panelGrid columns="2">
+					<p:outputLabel>Categoria</p:outputLabel>
+					<p:column>
+						<p:selectOneMenu value="#{productMB.obj.categoria}" converter="entityConverter" >
+							<f:selectItems value="#{productMB.listCategory}" var="cat" itemLabel="#{cat.categoria}" itemValue="#{cat}"/>
+						</p:selectOneMenu>
+					</p:column>
+					<p:outputLabel>Codigo Interno</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{productMB.obj.codigoInterno}" size="10"  required="true" requiredMessage="Codigo é obrigatório"/>
+						<h:inputHidden value="#{productMB.obj.idProduct}" />
+					</p:column>
+					<p:outputLabel>Codigo EAN</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{productMB.obj.codigoEAN}" size="10" />
+					</p:column>
+					<p:outputLabel>Codigo NCM</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{productMB.obj.codigoNCM}" size="10" />
+					</p:column>
+					<p:outputLabel>Produto</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{productMB.obj.nomeProduto}" size="40" required="true"/>
+					</p:column>
+					<p:outputLabel>Dimensão</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{productMB.obj.dimensao}" size="40" required="true"/>
+					</p:column>
+					<p:outputLabel>Preço Custo</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{productMB.obj.precoCusto}" size="8" required="true"/>
+					</p:column>
+					<p:outputLabel>Preço Atacado</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{productMB.obj.precoAtacado}" size="8" required="true"/>
+					</p:column>
+					<p:outputLabel>Preço Varejo</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{productMB.obj.precoVarejo}" size="8" required="true"/>
+					</p:column>
+					<p:outputLabel>Estoque</p:outputLabel>
+					<p:column>
+						<p:inputText value="#{productMB.obj.amount}" size="8" required="true"/>
+					</p:column>
+					<p:outputLabel>Produto Ativo</p:outputLabel>
+					<p:column>
+						<p:selectBooleanCheckbox value="#{productMB.obj.ativo}" />
+					</p:column>
+	
+					<p:commandButton value="Salvar" action="#{productMB.doSave}" update=":formCad,:formGrid" />
+					<p:commandButton value="Cancelar" update=":formCad" process="@this" styleClass="RedButton" >
+		                <p:resetInput target=":formCad" />
+		            </p:commandButton>
+				</h:panelGrid>
+
+				<p:fieldset legend="Estoque" toggleable="true" collapsed="true"  >
+					<p:dataTable value="#{productMB.listStock}" var="stk" >
+						<p:column >
+							<f:facet name="header">
+								<h:outputText style="font-weight: bold;" value="Data" />
+							</f:facet>
+				               <h:outputText value="#{stk.date}" >
+				               		<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+				               </h:outputText>
+						</p:column>
+						<p:column >
+							<f:facet name="header">
+								<h:outputText style="font-weight: bold;" value="Desc" />
+							</f:facet>
+				               <h:outputText value="#{stk.description}" />
+						</p:column>
+						<p:column >
+							<f:facet name="header">
+								<h:outputText style="font-weight: bold;" value="Quantidade" />
+							</f:facet>
+				               <h:outputText value="#{stk.amount}" />
+						</p:column>
+						<p:column >
+							<f:facet name="header">
+								<h:outputText style="font-weight: bold;" value="Tipo" />
+							</f:facet>
+				               <h:outputText value="#{stk.entryType}" />
+						</p:column>
+					</p:dataTable>
+				</p:fieldset>
+			
+				</p:fieldset>
+			</h:form>
+	
+		<h:form id="formGrid">
+			<p:messages id="msgs"/>
+			<h:panelGrid columns="2">
+				<p:dataTable value="#{productMB.list}" var="obj" rowKey="#{obj.idProduct}"	selection="#{productMB.selectedObj}"  >
+			         <f:facet name="header">       </f:facet>
+			        <p:column selectionMode="single" style="width:20px;text-align:center"/>
+					
+					<p:column filterBy="#{obj.nomeProduto}"   filterMatchMode="contains">
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Produto" />
+						</f:facet>
+			               <h:outputText value="#{obj.nomeProduto}" />
+					</p:column>
+					
+					<p:column filterBy="#{obj.codigoInterno}"  filterMatchMode="contains">
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Codigo Interno" />
+						</f:facet>
+			               <h:outputText value="#{obj.codigoInterno}" />
+					</p:column>
+					
+					<p:column>
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Preço Custo" />
+						</f:facet>
+			               <h:outputText value="#{obj.precoCusto}" >
+			               	<f:convertNumber pattern="#,##0.00" />
+			               </h:outputText>
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Preço Atacado" />
+						</f:facet>
+			               <h:outputText value="#{obj.precoAtacado}" >
+			               	<f:convertNumber pattern="#,##0.00" />
+			               </h:outputText>
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Preço Varejo" />
+						</f:facet>
+			               <h:outputText value="#{obj.precoVarejo}" >
+			               	<f:convertNumber pattern="#,##0.00" />
+			               </h:outputText>
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText style="font-weight: bold;" value="Estoque" />
+						</f:facet>
+			               <h:outputText value="#{obj.amount}" />
+					</p:column>
+			      
+			        <f:facet name="footer">
+			            <p:commandButton value="Alterar" actionListener="#{productMB.doUpdate}" update=":formCad">
+					    </p:commandButton>
+			            <p:commandButton value="Excluir" actionListener="#{productMB.doDelete}" update=":formGrid">
+					        <p:confirm header="Confirmação" message="Deseja realmente excluir?" icon="ui-icon-alert" />
+					    </p:commandButton>
+			        </f:facet>
+				</p:dataTable>
+			</h:panelGrid>
+			
+			 <p:confirmDialog global="true" showEffect="fade" hideEffect="explode">
+		        <p:commandButton value="Sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		        <p:commandButton value="Não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		    </p:confirmDialog>
+			
+		</h:form>
+	</p:panel>
+		
+	</ui:define>
+
+</ui:composition>
+
